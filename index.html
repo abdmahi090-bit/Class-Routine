@@ -90,7 +90,7 @@
 <div id="app">
   <div class="header">
     <h1>📚 Class Routine</h1>
-    <p>Tap any period to edit · Lab spans 3 periods</p>
+    <p id="todayLabel">Tap any period to edit · Lab spans 3 periods</p>
     <div class="day-tabs" id="dayTabs"></div>
   </div>
   <div class="schedule" id="schedule"></div>
@@ -244,7 +244,13 @@ function getLabTime(i) {
 }
 
 let routine = {};
-let activeDay = 0;
+function getTodayIndex() {
+  const jsDay = new Date().getDay();
+  if (jsDay >= 0 && jsDay <= 4) return jsDay;
+  if (jsDay === 5) return 4;
+  return 0;
+}
+let activeDay = getTodayIndex();
 let editTarget = null;
 let isLabMode = false;
 let selectedColor = COLORS[0];
@@ -269,6 +275,13 @@ function renderDayTabs() {
   document.getElementById('dayTabs').innerHTML = DAYS.map((d,i) =>
     `<button class="day-tab${i===activeDay?' active':''}" onclick="switchDay(${i})">${d}</button>`
   ).join('');
+
+  const jsDay = new Date().getDay();
+  const isClassDay = jsDay >= 0 && jsDay <= 4;
+  const dayName = DAYS[activeDay];
+  document.getElementById('todayLabel').textContent = isClassDay
+    ? `Today is ${dayName} · Tap any period to edit`
+    : `Weekend · Showing ${dayName} · Tap any period to edit`;
 }
 
 function renderSchedule() {
@@ -389,3 +402,7 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
+
+
+
